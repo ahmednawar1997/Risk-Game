@@ -14,7 +14,7 @@ import riskgame.State;
 public class Aggressive extends Player{
 
     @Override
-    public void play(State state) {
+    public State play(State state) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
