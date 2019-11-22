@@ -15,5 +15,6 @@ public class MiniMax extends Player {
         if(state.getPlayer().getTerritories().size()==0){
         
         }
+        return 0;
     }
 }
