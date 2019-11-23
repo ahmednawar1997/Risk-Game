@@ -8,19 +8,30 @@ import riskgame.Agents.Player;
 public class State implements Cloneable {
 
     private ArrayList<Territory> territories = new ArrayList<>();
-    private Player player;
+    private ArrayList<Player> players;
+    private int playerTurn;
 
-    public State(ArrayList<Territory> territories, Player player) {
+    public State(ArrayList<Territory> territories, ArrayList<Player> players) {
         this.territories = territories;
-        this.player = player;
+        this.players = players;
+        this.playerTurn = 0;
+
     }
 
-    public Player getPlayer() {
-        return player;
+    public int getPlayerTurn() {
+        return playerTurn;
     }
 
-    public void setPlayer(Player player) {
-        this.player = player;
+    public void setPlayerTurn(int playerTurn) {
+        this.playerTurn = playerTurn;
+    }
+
+    public ArrayList<Player> getPlayers() {
+        return players;
+    }
+
+    public void setPlayers(ArrayList<Player> players) {
+        this.players = players;
     }
 
     public ArrayList<Territory> getTerritories() {
@@ -31,25 +42,27 @@ public class State implements Cloneable {
         this.territories = territories;
     }
 
-    public int evaluateUtility() {
-        if (getPlayer().getTerritories().size() == 0) {
-            return 100;
-        }
-
-        if (getPlayer().getOpponent().getTerritories().size() == 0) {
-            return -100;
-        }
-        return 0;
-    }
-
+//    public int evaluateUtility() {
+//        if (getPlayer1().getTerritories().size() == 0) {
+//            return 100;
+//        }
+//
+//        if (getPlayer2().getTerritories().size() == 0) {
+//            return -100;
+//        }
+//        return 0;
+//    }
     public Object clone() {
         State cloned = null;
         try {
             cloned = (State) super.clone();
             ArrayList<Territory> ts = new ArrayList<>();
-            ts = cloneArrayList(cloned.getTerritories());
+            ts = cloneArrayListTerritories(cloned.getTerritories());
             cloned.setTerritories(ts);
-            cloned.setPlayer((Player) cloned.getPlayer().clone(cloned));
+            ArrayList<Player> players = new ArrayList<>();
+            players = cloneArrayListPlayers(cloned.getPlayers(), cloned);
+            cloned.setPlayers(players);
+
         } catch (CloneNotSupportedException ex) {
             Logger.getLogger(State.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -58,13 +71,15 @@ public class State implements Cloneable {
     }
 
     public boolean isGameEnded() {
-        if (this.getPlayer().getTerritories().size() == 0 || this.getPlayer().getOpponent().getTerritories().size() == 0) {
-            return true;
+        for (Player player : players) {
+            if (player.getNumberOfTroops() == 0) {
+                return true;
+            }
         }
         return false;
     }
 
-    private ArrayList<Territory> cloneArrayList(ArrayList<Territory> territories) {
+    private ArrayList<Territory> cloneArrayListTerritories(ArrayList<Territory> territories) {
         ArrayList<Territory> ts = new ArrayList<>();
         for (Territory t : territories) {
             ts.add((Territory) t.clone());
@@ -73,4 +88,12 @@ public class State implements Cloneable {
         return ts;
     }
 
+    private ArrayList<Player> cloneArrayListPlayers(ArrayList<Player> players, State state) {
+        ArrayList<Player> ps = new ArrayList<>();
+        for (Player p : players) {
+            ps.add((Player) p.clone(state));
+        }
+
+        return ps;
+    }
 }

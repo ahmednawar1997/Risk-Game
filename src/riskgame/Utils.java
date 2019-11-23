@@ -125,13 +125,12 @@ public class Utils {
     public void divideTerritoriesRandom(Player player1, Player player2, ArrayList<Territory> territories) {
         for (Territory t : territories) {
             if (Math.round(Math.random()) == 1) {
-                player1.addTerritory(t);
-//                t.setOwner(player1);
+                player1.addTerritory(t.getNumber());
             } else {
-                player2.addTerritory(t);
-//                t.setOwner(player2);
+                player2.addTerritory(t.getNumber());
             }
         }
     }
+    
 
 }

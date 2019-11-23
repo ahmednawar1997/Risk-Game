@@ -10,14 +10,18 @@ public class RiskGame {
         Utils utils = new Utils();
 
         ArrayList<Territory> usaTerritories = utils.initUSA();
-        Player player1 = new Passive();
-        Player player2 = new Passive();
+        Player player1 = new Passive(0);
+        Player player2 = new Passive(1);
 
-        player1.setOpponent(player2);
-        player2.setOpponent(player1);
         utils.divideTerritoriesRandom(player1, player2, usaTerritories);
 
-        State state = new State(usaTerritories, player1);
+        ArrayList<Player> players = new ArrayList<>();
+        players.add(player1);
+        players.add(player2);
+
+        State state = new State(usaTerritories, players);
+        player1.divideTroopsRandom(state);
+        player2.divideTroopsRandom(state);
         player1.setBonusTroops(50);
         player2.setBonusTroops(50);
 

@@ -1,6 +1,6 @@
 package riskgame.Agents;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import riskgame.State;
@@ -8,14 +8,14 @@ import riskgame.Territory;
 
 public abstract class Player implements Cloneable {
 
-    private String name;
+    private int turn;
     private int numberOfTroops = 50;
-    private ArrayList<Territory> territories = new ArrayList<>();
-    private Player opponent;
+    private HashSet<Integer> territories = new HashSet<>();
     private int bonusTroops;
 
-    public Player() {
+    public Player(int turn) {
         this.bonusTroops = 0;
+        this.turn = turn;
     }
 
     public int getBonusTroops() {
@@ -26,20 +26,12 @@ public abstract class Player implements Cloneable {
         this.bonusTroops = bonusTroops;
     }
 
-    public Player getOpponent() {
-        return opponent;
+    public int getTurn() {
+        return turn;
     }
 
-    public void setOpponent(Player opponent) {
-        this.opponent = opponent;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public void setTurn(int turn) {
+        this.turn = turn;
     }
 
     public int getNumberOfTroops() {
@@ -50,15 +42,15 @@ public abstract class Player implements Cloneable {
         this.numberOfTroops = numberOfTroops;
     }
 
-    public ArrayList<Territory> getTerritories() {
+    public HashSet<Integer> getTerritories() {
         return territories;
     }
 
-    public void setTerritories(ArrayList<Territory> territories) {
+    public void setTerritories(HashSet<Integer> territories) {
         this.territories = territories;
     }
 
-    public void addTerritory(Territory territory) {
+    public void addTerritory(int territory) {
         territories.add(territory);
     }
 
@@ -70,9 +62,7 @@ public abstract class Player implements Cloneable {
         Player cloned = null;
         try {
             cloned = (Player) super.clone();
-            ArrayList<Territory> ts = new ArrayList<>();
-            ts = cloneArrayList(cloned.getTerritories(), state);
-            cloned.setTerritories(ts);
+            cloned.setTerritories(cloneHashSet(cloned.getTerritories()));
         } catch (CloneNotSupportedException ex) {
             Logger.getLogger(State.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -80,46 +70,49 @@ public abstract class Player implements Cloneable {
 
     }
 
-    private static ArrayList<Territory> cloneArrayList(ArrayList<Territory> territories, State state) {
-        ArrayList<Territory> ts = new ArrayList<>();
-        for (Territory t : territories) {
-            ts.add(state.getTerritories().get(t.getNumber() - 1));
+    private static HashSet<Integer> cloneHashSet(HashSet<Integer> territories) {
+        HashSet<Integer> set = new HashSet<>();
+        for (Integer t : territories) {
+            set.add(t);
         }
-
-        return ts;
+        return set;
     }
 
-    public void divideTroopsRandom() {
+    public void divideTroopsRandom(State state) {
         int numberOfTerritories = this.territories.size();
         for (int i = 0; i < numberOfTroops; i++) {
-            int rndm = (int) Math.round(Math.random() * (numberOfTerritories + 1));
-            System.out.println("random: " + rndm);
-            territories.get(rndm).setNumberOfTroops(territories.get(rndm).getNumberOfTroops() + 1);
+            int rndm = (int) Math.round(Math.random() * (numberOfTerritories - 1));
+            //territories.get(rndm).setNumberOfTroops(territories.get(rndm).getNumberOfTroops() + 1);
+            if (territories.contains(rndm)) {
+                state.getTerritories().get(rndm).setNumberOfTroops(state.getTerritories().get(rndm).getNumberOfTroops() + 1);
+            } else {
+                i--;
+            }
         }
     }
 
-    public Territory getTerritoryWithLowestTroops() {
+    public Territory getTerritoryWithLowestTroops(State state) {
         int min = Integer.MAX_VALUE;
         Territory lowestTerritory = null;
-        for (Territory territory : this.territories) {
+        for (Integer territory : this.territories) {
             if (min == 0) {
                 break;
             }
-            if (territory.getNumberOfTroops() < min) {
-                lowestTerritory = territory;
-                min = territory.getNumberOfTroops();
+            if (state.getTerritories().get(territory).getNumberOfTroops() < min) {
+                lowestTerritory = state.getTerritories().get(territory);
+                min = state.getTerritories().get(territory).getNumberOfTroops();
             }
         }
         return lowestTerritory;
     }
 
-    public Territory getTerritoryWithHighestTroops() {
+    public Territory getTerritoryWithHighestTroops(State state) {
         int max = Integer.MIN_VALUE;
         Territory highestTerritory = null;
-        for (Territory territory : this.territories) {
-            if (territory.getNumberOfTroops() > max) {
-                highestTerritory = territory;
-                max = territory.getNumberOfTroops();
+        for (Integer territory : this.territories) {
+            if (state.getTerritories().get(territory).getNumberOfTroops() > max) {
+                highestTerritory = state.getTerritories().get(territory);
+                max = state.getTerritories().get(territory).getNumberOfTroops();
             }
         }
         return highestTerritory;

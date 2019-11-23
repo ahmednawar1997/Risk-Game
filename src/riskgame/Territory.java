@@ -1,14 +1,11 @@
 package riskgame;
 
-import riskgame.Agents.Player;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Territory implements Cloneable {
 
     private int number;
-//    private ArrayList<Territory> neighbours;
     private int[] neighbours;
     private int numberOfTroops;
 
@@ -41,13 +38,6 @@ public class Territory implements Cloneable {
         this.numberOfTroops = numberOfTroops;
     }
 
-//    public Player getOwner() {
-//        return owner;
-//    }
-//
-//    public void setOwner(Player owner) {
-//        this.owner = owner;
-//    }
     public Object clone() {
         Territory cloned = null;
         try {
