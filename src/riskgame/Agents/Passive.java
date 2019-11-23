@@ -5,17 +5,14 @@ import riskgame.Territory;
 
 public class Passive extends Player {
 
-    
     @Override
     public State play(State state) {
 
-        if (state.getPlayer().getBonusTroops() > 0) {
-            Territory territory = state.getTerritoryWithLowestTroops();
+        if (this.getBonusTroops() > 0) {
             State newState = (State) state.clone();
-            territory.setNumberOfTroops(territory.getNumberOfTroops() + state.getPlayer().getBonusTroops());
+            Territory territory = newState.getPlayer().getTerritoryWithLowestTroops();
 
-            state.getPlayer().addTroops(40);
-            
+            territory.setNumberOfTroops(territory.getNumberOfTroops() + newState.getPlayer().getBonusTroops());
             return newState;
         }
         return state;

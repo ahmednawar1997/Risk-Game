@@ -2,19 +2,19 @@ package riskgame;
 
 import riskgame.Agents.Player;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Territory implements Cloneable {
 
     private int number;
-    private ArrayList<Territory> neighbours;
+//    private ArrayList<Territory> neighbours;
+    private int[] neighbours;
     private int numberOfTroops;
-    private Player owner;
 
-    public Territory(int number) {
+    public Territory(int number, int[] neighbours) {
         this.number = number;
+        this.neighbours = neighbours;
     }
 
     public int getNumber() {
@@ -25,11 +25,11 @@ public class Territory implements Cloneable {
         this.number = number;
     }
 
-    public ArrayList<Territory> getNeighbours() {
+    public int[] getNeighbours() {
         return neighbours;
     }
 
-    public void setNeighbours(ArrayList<Territory> neighbours) {
+    public void setNeighbours(int[] neighbours) {
         this.neighbours = neighbours;
     }
 
@@ -41,25 +41,23 @@ public class Territory implements Cloneable {
         this.numberOfTroops = numberOfTroops;
     }
 
-    public Player getOwner() {
-        return owner;
-    }
-
-    public void setOwner(Player owner) {
-        this.owner = owner;
-    }
-
+//    public Player getOwner() {
+//        return owner;
+//    }
+//
+//    public void setOwner(Player owner) {
+//        this.owner = owner;
+//    }
     public Object clone() {
-
+        Territory cloned = null;
         try {
-            Territory cloned = (Territory) super.clone();
-            cloned.setOwner((Player) cloned.getOwner().clone());
-            cloned.setNeighbours((ArrayList<Territory>) cloned.getNeighbours().clone());
-            
+            cloned = (Territory) super.clone();
+//            cloned.setOwner((Player) cloned.getOwner().clone());
+            cloned.setNeighbours(cloned.getNeighbours().clone());
         } catch (CloneNotSupportedException ex) {
             Logger.getLogger(State.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return null;
+        return cloned;
 
     }
 

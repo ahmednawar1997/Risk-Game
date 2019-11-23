@@ -1,6 +1,7 @@
 package riskgame;
 
 import java.util.ArrayList;
+import riskgame.Agents.Player;
 
 public class Heuristic {
 
@@ -13,12 +14,12 @@ public class Heuristic {
         return 0;
     }
 
-    public static int evaluateUtility(State state) {
-        if (state.getPlayer().getTerritories().size() == 0) {
+    public static int evaluateUtility(State state, Player player) {
+        if (player.getTerritories().size() == 0) {
             return 100;
         }
 
-        if (state.getPlayer().getOpponent().getTerritories().size() == 0) {
+        if (player.getOpponent().getTerritories().size() == 0) {
             return -100;
         }
         return 0;

@@ -7,8 +7,13 @@ import riskgame.Agents.Player;
 
 public class State implements Cloneable {
 
-    private ArrayList<Territory> territories;
+    private ArrayList<Territory> territories = new ArrayList<>();
     private Player player;
+
+    public State(ArrayList<Territory> territories, Player player) {
+        this.territories = territories;
+        this.player = player;
+    }
 
     public Player getPlayer() {
         return player;
@@ -37,33 +42,35 @@ public class State implements Cloneable {
         return 0;
     }
 
-    public Territory getTerritoryWithLowestTroops() {
-        int min = 10000;
-        Territory lowestTerritory = null;
-        for (Territory territory : this.territories) {
-            if (min == 1) {
-                break;
-            }
-            if (territory.getNumberOfTroops() < min) {
-                lowestTerritory = territory;
-                min = territory.getNumberOfTroops();
-            }
-        }
-        return lowestTerritory;
-    }
-
     public Object clone() {
-
+        State cloned = null;
         try {
-            State cloned = (State) super.clone();
-            cloned.setPlayer((Player) cloned.getPlayer().clone());
-            cloned.setTerritories((ArrayList<Territory>) cloned.getTerritories().clone());
-
+            cloned = (State) super.clone();
+            ArrayList<Territory> ts = new ArrayList<>();
+            ts = cloneArrayList(cloned.getTerritories());
+            cloned.setTerritories(ts);
+            cloned.setPlayer((Player) cloned.getPlayer().clone(cloned));
         } catch (CloneNotSupportedException ex) {
             Logger.getLogger(State.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return null;
+        return cloned;
 
+    }
+
+    public boolean isGameEnded() {
+        if (this.getPlayer().getTerritories().size() == 0 || this.getPlayer().getOpponent().getTerritories().size() == 0) {
+            return true;
+        }
+        return false;
+    }
+
+    private ArrayList<Territory> cloneArrayList(ArrayList<Territory> territories) {
+        ArrayList<Territory> ts = new ArrayList<>();
+        for (Territory t : territories) {
+            ts.add((Territory) t.clone());
+        }
+
+        return ts;
     }
 
 }

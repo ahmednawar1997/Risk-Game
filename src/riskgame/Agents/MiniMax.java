@@ -14,7 +14,7 @@ public class MiniMax extends Player {
 
     int max(State state, int alpha, int beta) {
 
-        if (state.getPlayer().getTerritories().size() == 0 || state.getPlayer().getOpponent().getTerritories().size() == 0) {
+        if (state.isGameEnded()) {
             return Heuristic.evaluateUtility(state);
         }
 
@@ -36,4 +36,6 @@ public class MiniMax extends Player {
         
 
     }
+    
+    
 }
