@@ -1,21 +1,25 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package riskgame.Agents;
 
 import riskgame.State;
+import riskgame.Territory;
 
-/**
- *
- * @author ahmed
- */
-public class Aggressive extends Player{
+public class Aggressive extends Player {
 
     @Override
     public State play(State state) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (this.getBonusTroops() > 0) {
+            State newState = (State) state.clone();
+            Territory territory = newState.getPlayer().getTerritoryWithHighestTroops();
+            territory.setNumberOfTroops(territory.getNumberOfTroops() + newState.getPlayer().getBonusTroops());
+            
+            
+            /*Attack*/
+            
+            
+            
+            return newState;
+        }
+        return state;
     }
-    
+
 }
