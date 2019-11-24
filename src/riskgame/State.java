@@ -10,12 +10,21 @@ public class State implements Cloneable {
     private ArrayList<Territory> territories = new ArrayList<>();
     private ArrayList<Player> players;
     private int playerTurn;
+    private int depth;
 
-    public State(ArrayList<Territory> territories, ArrayList<Player> players) {
+    public State(ArrayList<Territory> territories, ArrayList<Player> players,int depth) {
         this.territories = territories;
         this.players = players;
         this.playerTurn = 0;
+        this.depth=depth;
+    }
 
+    public int getDepth() {
+        return depth;
+    }
+
+    public void setDepth(int depth) {
+        this.depth = depth;
     }
 
     public int getPlayerTurn() {

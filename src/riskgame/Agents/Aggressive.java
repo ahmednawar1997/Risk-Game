@@ -43,7 +43,7 @@ public class Aggressive extends Player {
         return highestTerritory;
     }
 
-    private ArrayList<Territory> getAttackableNeighbours(Territory territory, State state) {
+    public ArrayList<Territory> getAttackableNeighbours(Territory territory, State state) {
         int[] neighbours = territory.getNeighbours();
         ArrayList<Territory> attackableNeighbours = new ArrayList<>();
         for (int number : neighbours) {

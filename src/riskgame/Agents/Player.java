@@ -1,5 +1,6 @@
 package riskgame.Agents;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -69,26 +70,48 @@ public abstract class Player implements Cloneable {
         return cloned;
 
     }
+    public ArrayList<Territory> getAttackableNeighbours(Territory territory, State state) {
+        int[] neighbours = territory.getNeighbours();
+        ArrayList<Territory> attackableNeighbours = new ArrayList<>();
+        for (int number : neighbours) {
+            if (isEnemy(state.getTerritories().get(number - 1))) {
+                attackableNeighbours.add(state.getTerritories().get(number - 1));
+            }
+        }
+        return attackableNeighbours;
+    }
+
+    private boolean isEnemy(Territory t) {
+        boolean enemy = true;
+        for (int territory : this.getTerritories()) {
+            if (t.getNumber() == territory) {
+                enemy = false;
+            }
+        }
+        return enemy;
+    }
 
     private static HashSet<Integer> cloneHashSet(HashSet<Integer> territories) {
         HashSet<Integer> set = new HashSet<>();
-        for (Integer t : territories) {
+        territories.stream().forEach((t) -> {
             set.add(t);
-        }
+        });
         return set;
     }
 
     public void divideTroopsRandom(State state) {
-        int numberOfTerritories = this.territories.size();
-        for (int i = 0; i < numberOfTroops; i++) {
-            int rndm = (int) Math.round(Math.random() * (numberOfTerritories - 1));
-            //territories.get(rndm).setNumberOfTroops(territories.get(rndm).getNumberOfTroops() + 1);
-            if (territories.contains(rndm)) {
-                state.getTerritories().get(rndm).setNumberOfTroops(state.getTerritories().get(rndm).getNumberOfTroops() + 1);
-            } else {
-                i--;
-            }
+        ArrayList<Integer> s = new ArrayList<>(state.getPlayers().get(this.getTurn()).getTerritories());
+        for (int i = 0; i < s.size(); i++) {
+            state.getTerritories().get(s.get(i)-1).setNumberOfTroops(1);
+            state.getPlayers().get(this.getTurn()).setBonusTroops(state.getPlayers().get(this.getTurn()).getBonusTroops()-1);
         }
+        
+        while(state.getPlayers().get(this.getTurn()).getBonusTroops()>0){
+            int rndm = (int) Math.round(Math.random() * (state.getPlayers().get(this.getTurn()).getTerritories().size() - 1));
+            state.getTerritories().get(s.get(rndm) - 1).setNumberOfTroops(state.getTerritories().get(s.get(rndm) - 1).getNumberOfTroops() + 1);
+              state.getPlayers().get(this.getTurn()).setBonusTroops(state.getPlayers().get(this.getTurn()).getBonusTroops()-1);
+        }
+        
     }
 
     public Territory getTerritoryWithLowestTroops(State state) {
