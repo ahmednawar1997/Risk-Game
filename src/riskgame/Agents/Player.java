@@ -10,7 +10,6 @@ import riskgame.Territory;
 public abstract class Player implements Cloneable {
 
     private int turn;
-//    private int numberOfTroops = 50;
     private HashSet<Integer> territories = new HashSet<>();
     private int bonusTroops;
 
@@ -39,10 +38,6 @@ public abstract class Player implements Cloneable {
         this.turn = turn;
     }
 
-//
-//    public void setNumberOfTroops(int numberOfTroops) {
-//        this.numberOfTroops = numberOfTroops;
-//    }
     public HashSet<Integer> getTerritories() {
         return territories;
     }
@@ -143,6 +138,97 @@ public abstract class Player implements Cloneable {
             troops += state.getTerritories().get(i - 1).getNumberOfTroops();
         }
         return troops;
+    }
+
+    protected void attack(Territory territory, Territory enemyTerritory, int numberOfAttacking, State newState) {
+        Player attackingPlayer = newState.getPlayers().get(territory.getOwner(newState));
+        Player defendingPlayer = newState.getPlayers().get(enemyTerritory.getOwner(newState));
+        System.out.println("Player " + attackingPlayer.getTurn() + " attacking");
+        System.out.println("Troops Attacking: " + territory.getNumberOfTroops() + " vs " + enemyTerritory.getNumberOfTroops());
+        if (territory.getNumberOfTroops() > enemyTerritory.getNumberOfTroops()) {
+            System.out.println("Player " + attackingPlayer.getTurn() + " won " + enemyTerritory.getNumber() + " with Territory " + territory.getNumber());
+
+            enemyTerritory.setNumberOfTroops(numberOfAttacking);
+            territory.setNumberOfTroops(1);
+
+            attackingPlayer.getTerritories().add(enemyTerritory.getNumber());
+            defendingPlayer.getTerritories().remove(enemyTerritory.getNumber());
+
+        } else {
+            System.out.println("Player " + defendingPlayer.getTurn() + " won " + territory.getNumber() + " with Territory " + enemyTerritory.getNumber());
+
+            territory.setNumberOfTroops(0);
+            newState.getPlayers().get(enemyTerritory.getOwner(newState)).getTerritories().add(territory.getNumber());
+
+            newState.getPlayers().get(territory.getOwner(newState)).getTerritories().remove(territory.getNumber());
+        }
+    }
+
+    protected boolean attack(Territory territory, Territory enemyTerritory, State newState) {
+        Player attackingPlayer = newState.getPlayers().get(territory.getOwner(newState));
+        Player defendingPlayer = newState.getPlayers().get(enemyTerritory.getOwner(newState));
+
+        int attackingNumber = calculateAttackingNumber(territory);
+        int defendingNumber = calculateDefendingNumber(enemyTerritory);
+
+        System.out.println("Player " + attackingPlayer.getTurn() + " attacking");
+        System.out.println("Troops Attacking: " + attackingNumber + " vs " + defendingNumber);
+        System.out.println("Total Troops in Attacking: " + territory.getNumberOfTroops() + " vs " + enemyTerritory.getNumberOfTroops());
+
+        if (isAttackingWon(attackingNumber, defendingNumber)) {
+            enemyTerritory.setNumberOfTroops(enemyTerritory.getNumberOfTroops() - defendingNumber);
+            System.out.println("attacking won");
+            if (enemyTerritory.getNumberOfTroops() <= 0) {
+                System.out.println("Player " + attackingPlayer.getTurn() + " won " + enemyTerritory.getNumber() + " with Territory " + territory.getNumber());
+
+                conquer(territory, enemyTerritory, attackingPlayer, defendingPlayer);
+                return true;
+            }
+
+        } else {
+            System.out.println("defending won");
+
+            territory.setNumberOfTroops(territory.getNumberOfTroops() - attackingNumber);
+            System.out.println("Player " + defendingPlayer.getTurn() + " won " + territory.getNumber() + " with Territory " + enemyTerritory.getNumber());
+
+            if (territory.getNumberOfTroops() <= 0) {
+                conquer(enemyTerritory, territory, defendingPlayer, attackingPlayer);
+                return true;
+            }
+        }
+        return false;
+
+    }
+
+    private int calculateAttackingNumber(Territory territory) {
+        if (territory.getNumberOfTroops() > 3) {
+            return 3;
+        } else {
+            return (territory.getNumberOfTroops());
+        }
+    }
+
+    private int calculateDefendingNumber(Territory territory) {
+        if (territory.getNumberOfTroops() >= 2) {
+            return 2;
+        } else {
+            return territory.getNumberOfTroops();
+        }
+    }
+
+    private boolean isAttackingWon(int attackingNumber, int defendingNumber) {
+
+        double rndm = Math.random();
+        double prob = (double)attackingNumber / (double)(attackingNumber + defendingNumber);
+        return (rndm < prob);
+
+    }
+
+    private void conquer(Territory attck, Territory dfnd, Player attackingPlayer, Player defendingPlayer) {
+        dfnd.setNumberOfTroops(attck.getNumberOfTroops() - 1);
+        attck.setNumberOfTroops(1);
+        attackingPlayer.getTerritories().add(dfnd.getNumber());
+        defendingPlayer.getTerritories().remove(dfnd.getNumber());
     }
 
     public abstract State play(State state);

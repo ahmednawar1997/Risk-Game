@@ -13,7 +13,6 @@ public class Aggressive extends Player {
 
     @Override
     public State play(State state) {
-//        state.setPlayerTurn(this.getTurn());
 
         State newState = (State) state.clone();
         Territory territory = newState.getPlayers().get(this.getTurn()).getTerritoryWithHighestTroops(newState);/////////
@@ -21,10 +20,14 @@ public class Aggressive extends Player {
         newState.getPlayers().get(this.getTurn()).setBonusTroops(0);
 
         /*Attack*/
-        Territory enemyTerritory = getTerritoryWithHighestTroopsFromNeighbours(territory, newState);
-        attack(territory, enemyTerritory, territory.getNumberOfTroops() - 1, newState);
+        boolean conquered = false;
 
-        Utils.printState(newState);
+        while (!conquered) {
+            Territory enemyTerritory = getTerritoryWithHighestTroopsFromNeighbours(territory, newState);
+            conquered = attack(territory, enemyTerritory, newState);
+
+            Utils.printState(newState);
+        }
         return newState;
 
     }
@@ -65,27 +68,4 @@ public class Aggressive extends Player {
         return enemy;
     }
 
-    private void attack(Territory territory, Territory enemyTerritory, int numberOfAttacking, State newState) {
-        Player attackingPlayer = newState.getPlayers().get(territory.getOwner(newState));
-        Player defendingPlayer = newState.getPlayers().get(enemyTerritory.getOwner(newState));
-        System.out.println("Player " + attackingPlayer.getTurn() + " attacking");
-        System.out.println("Troops Attacking: " + territory.getNumberOfTroops() + " vs " + enemyTerritory.getNumberOfTroops());
-        if (territory.getNumberOfTroops() > enemyTerritory.getNumberOfTroops()) {
-            System.out.println("Player " + attackingPlayer.getTurn() + " won " + enemyTerritory.getNumber() + " with Territory " + territory.getNumber());
-
-            enemyTerritory.setNumberOfTroops(numberOfAttacking);
-            territory.setNumberOfTroops(1);
-
-            attackingPlayer.getTerritories().add(enemyTerritory.getNumber());
-            defendingPlayer.getTerritories().remove(enemyTerritory.getNumber());
-
-        } else {
-            System.out.println("Player " + defendingPlayer.getTurn() + " won " + territory.getNumber() + " with Territory " + enemyTerritory.getNumber());
-
-            territory.setNumberOfTroops(0);
-            newState.getPlayers().get(enemyTerritory.getOwner(newState)).getTerritories().add(territory.getNumber());
-
-            newState.getPlayers().get(territory.getOwner(newState)).getTerritories().remove(territory.getNumber());
-        }
-    }
 }

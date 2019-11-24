@@ -1,6 +1,7 @@
 package riskgame;
 
 import java.util.ArrayList;
+import riskgame.Agents.A_Star;
 import riskgame.Agents.Aggressive;
 import riskgame.Agents.Passive;
 import riskgame.Agents.Player;

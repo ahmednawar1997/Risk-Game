@@ -2,7 +2,6 @@ package riskgame.Agents;
 
 import riskgame.State;
 import riskgame.Territory;
-import riskgame.Utils;
 
 public class Passive extends Player {
 
