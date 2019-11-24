@@ -1,8 +1,9 @@
 package riskgame;
 
 import java.util.ArrayList;
-import riskgame.Agents.A_Star;
+
 import riskgame.Agents.Aggressive;
+import riskgame.Agents.MiniMax;
 import riskgame.Agents.Passive;
 import riskgame.Agents.Player;
 
@@ -12,8 +13,8 @@ public class RiskGame {
         Utils utils = new Utils();
 
         ArrayList<Territory> usaTerritories = utils.initUSA();
-        Player player1 = new Aggressive(0);
-        Player player2 = new Aggressive(1);
+        Player player1 = new MiniMax(0);
+        Player player2 = new Passive(1);
 
         utils.divideTerritoriesRandom(player1, player2, usaTerritories);
 
@@ -21,7 +22,7 @@ public class RiskGame {
         players.add(player1);
         players.add(player2);
 
-        State state = new State(usaTerritories, players);
+        State state = new State(usaTerritories, players, 0);
         player1.divideTroopsRandom(state, 50);
         player2.divideTroopsRandom(state, 50);
 
@@ -33,6 +34,7 @@ public class RiskGame {
     private void startGame(State state) {
         while (true) {
             for (int i = 0; i < state.getPlayers().size(); i++) {
+                Utils.printState(state);
 
                 if (isGameEnded(state)) {
                     return;
@@ -55,4 +57,19 @@ public class RiskGame {
         return false;
     }
 
+//    public static void printState(State temp) {
+//        ArrayList<Integer> s = new ArrayList<>(temp.getPlayers().get(0).getTerritories());
+//        System.out.println("MinMax ownes: ");
+//        for (int i = 0; i < s.size(); i++) {
+//            System.out.print("Territory number: " + s.get(i) + " with " + temp.getTerritories().get(s.get(i) - 1).getNumberOfTroops() + " troops");
+//        }
+//        System.out.println("");
+//
+//        s = new ArrayList<>(temp.getPlayers().get(1).getTerritories());
+//        System.out.println("Pssive ownnes: ");
+//        for (int i = 0; i < s.size(); i++) {
+//            System.out.print("Territory number: " + s.get(i) + " with " + temp.getTerritories().get(s.get(i) - 1).getNumberOfTroops() + " troops");
+//        }
+//        System.out.println("");
+//    }
 }

@@ -61,45 +61,7 @@ public abstract class Player implements Cloneable {
         return cloned;
 
     }
-
-    private static HashSet<Integer> cloneHashSet(HashSet<Integer> territories) {
-        HashSet<Integer> set = new HashSet<>();
-        for (Integer t : territories) {
-            set.add(t);
-        }
-        return set;
-    }
-
-    public void divideTroopsRandom(State state, int numberOfTroops) {
-        int numberOfTerritories = this.territories.size();
-        for (int num : this.territories) {
-            state.getTerritories().get(num - 1).setNumberOfTroops(1);
-            numberOfTroops--;
-        }
-        ArrayList<Integer> ts = new ArrayList<>(this.getTerritories());
-        for (int i = 0; i < numberOfTroops; i++) {
-            int rndm = (int) Math.round(Math.random() * (numberOfTerritories - 1));
-            state.getTerritories().get(ts.get(rndm) - 1).setNumberOfTroops(state.getTerritories().get(ts.get(rndm) - 1).getNumberOfTroops() + 1);
-//            System.out.println("number of troops "+ts.get(rndm));
-        }
-    }
-
-    public Territory getTerritoryWithLowestTroops(State state) {
-        int min = Integer.MAX_VALUE;
-        Territory lowestTerritory = null;
-        for (Integer territory : this.territories) {
-            if (min == 0) {
-                break;
-            }
-            if (state.getTerritories().get(territory - 1).getNumberOfTroops() < min) {
-                lowestTerritory = state.getTerritories().get(territory - 1);
-                min = state.getTerritories().get(territory - 1).getNumberOfTroops();
-            }
-        }
-        return lowestTerritory;
-    }
-
-    private ArrayList<Territory> getAttackableNeighbours(Territory territory, State state) {
+    public ArrayList<Territory> getAttackableNeighbours(Territory territory, State state) {
         int[] neighbours = territory.getNeighbours();
         ArrayList<Territory> attackableNeighbours = new ArrayList<>();
         for (int number : neighbours) {
@@ -119,6 +81,50 @@ public abstract class Player implements Cloneable {
         }
         return enemy;
     }
+
+    private static HashSet<Integer> cloneHashSet(HashSet<Integer> territories) {
+        HashSet<Integer> set = new HashSet<>();
+        territories.stream().forEach((t) -> {
+            set.add(t);
+        });
+        return set;
+    }
+
+    public void divideTroopsRandom(State state, int numberOfTroops) {
+        int numberOfTerritories = this.territories.size();
+        for (int num : this.territories) {
+            state.getTerritories().get(num - 1).setNumberOfTroops(1);
+            numberOfTroops--;
+        }
+        ArrayList<Integer> ts = new ArrayList<>(this.getTerritories());
+        for (int i = 0; i < numberOfTroops; i++) {
+            int rndm = (int) Math.round(Math.random() * (numberOfTerritories - 1));
+            state.getTerritories().get(ts.get(rndm) - 1).setNumberOfTroops(state.getTerritories().get(ts.get(rndm) - 1).getNumberOfTroops() + 1);
+//            System.out.println("number of troops "+ts.get(rndm));
+        }
+        
+        
+        
+    }
+
+    public Territory getTerritoryWithLowestTroops(State state) {
+        int min = Integer.MAX_VALUE;
+        Territory lowestTerritory = null;
+        for (Integer territory : this.territories) {
+            if (min == 0) {
+                break;
+            }
+            if (state.getTerritories().get(territory - 1).getNumberOfTroops() < min) {
+                lowestTerritory = state.getTerritories().get(territory - 1);
+                min = state.getTerritories().get(territory - 1).getNumberOfTroops();
+            }
+        }
+        return lowestTerritory;
+    }
+
+   
+
+   
 
     public Territory getTerritoryWithHighestTroops(State state) {
         int max = Integer.MIN_VALUE;
@@ -174,11 +180,13 @@ public abstract class Player implements Cloneable {
         System.out.println("Player " + attackingPlayer.getTurn() + " attacking");
         System.out.println("Troops Attacking: " + attackingNumber + " vs " + defendingNumber);
         System.out.println("Total Troops in Attacking: " + territory.getNumberOfTroops() + " vs " + enemyTerritory.getNumberOfTroops());
+        System.out.println("Attacking "+territory.getNumber()+" on "+enemyTerritory.getNumber());
 
         if (isAttackingWon(attackingNumber, defendingNumber)) {
             enemyTerritory.setNumberOfTroops(enemyTerritory.getNumberOfTroops() - defendingNumber);
+         
             System.out.println("attacking won");
-            if (enemyTerritory.getNumberOfTroops() <= 0) {
+            if (enemyTerritory.getNumberOfTroops() == 0) {
                 System.out.println("Player " + attackingPlayer.getTurn() + " won " + enemyTerritory.getNumber() + " with Territory " + territory.getNumber());
 
                 conquer(territory, enemyTerritory, attackingPlayer, defendingPlayer);
@@ -188,23 +196,17 @@ public abstract class Player implements Cloneable {
         } else {
             System.out.println("defending won");
 
-            territory.setNumberOfTroops(territory.getNumberOfTroops() - attackingNumber);
-            System.out.println("Player " + defendingPlayer.getTurn() + " won " + territory.getNumber() + " with Territory " + enemyTerritory.getNumber());
-
-            if (territory.getNumberOfTroops() <= 0) {
-                conquer(enemyTerritory, territory, defendingPlayer, attackingPlayer);
-                return true;
-            }
+            territory.setNumberOfTroops(territory.getNumberOfTroops() - attackingNumber);            
         }
+      
         return false;
-
     }
 
     private int calculateAttackingNumber(Territory territory) {
         if (territory.getNumberOfTroops() > 3) {
             return 3;
         } else {
-            return (territory.getNumberOfTroops());
+            return (territory.getNumberOfTroops()-1);
         }
     }
 

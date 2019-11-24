@@ -77,9 +77,9 @@ public class Utils {
             System.out.println("Player: " + p.getTurn() + " *" + p.getClass().getSimpleName() + "*");
             System.out.println("Territories:" + p.getTerritories());
         }
-//        for (Territory t : state.getTerritories()) {
-//            System.out.println(t.getNumber() + " : " + t.getNumberOfTroops());
-//        }
+        for (Territory t : state.getTerritories()) {
+            System.out.print(t.getNumber() + " : " + t.getNumberOfTroops()+" troops || ");
+        }
 
         System.out.println("");
     }

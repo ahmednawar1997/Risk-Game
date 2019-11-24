@@ -23,10 +23,12 @@ public class Aggressive extends Player {
         boolean conquered = false;
 
         while (!conquered) {
-            Territory enemyTerritory = getTerritoryWithHighestTroopsFromNeighbours(territory, newState);
+            if(territory.getNumberOfTroops()==1){
+                break;
+            }
+            Territory enemyTerritory = getTerritoryWithleastTroopsFromNeighbours(territory, newState);
             conquered = attack(territory, enemyTerritory, newState);
 
-            Utils.printState(newState);
         }
         return newState;
 
@@ -46,8 +48,21 @@ public class Aggressive extends Player {
         }
         return highestTerritory;
     }
+ public Territory getTerritoryWithleastTroopsFromNeighbours(Territory territory, State state) {
+        int max = Integer.MAX_VALUE;
 
-    private ArrayList<Territory> getAttackableNeighbours(Territory territory, State state) {
+        ArrayList<Territory> attackableNeighbours = getAttackableNeighbours(territory, state);
+
+        Territory highestTerritory = null;
+        for (Territory t : attackableNeighbours) {
+            if (t.getNumberOfTroops() < max) {
+                highestTerritory = t;
+                max = t.getNumberOfTroops();
+            }
+        }
+        return highestTerritory;
+    }
+    public ArrayList<Territory> getAttackableNeighbours(Territory territory, State state) {
         int[] neighbours = territory.getNeighbours();
         ArrayList<Territory> attackableNeighbours = new ArrayList<>();
         for (int number : neighbours) {
