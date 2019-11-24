@@ -56,11 +56,12 @@ public class State implements Cloneable {
         State cloned = null;
         try {
             cloned = (State) super.clone();
-            ArrayList<Territory> ts = new ArrayList<>();
-            ts = cloneArrayListTerritories(cloned.getTerritories());
-            cloned.setTerritories(ts);
             ArrayList<Player> players = new ArrayList<>();
             players = cloneArrayListPlayers(cloned.getPlayers(), cloned);
+            
+            ArrayList<Territory> ts = new ArrayList<>();
+            ts = cloneArrayListTerritories(cloned.getTerritories(), cloned);
+            cloned.setTerritories(ts);
             cloned.setPlayers(players);
 
         } catch (CloneNotSupportedException ex) {
@@ -70,19 +71,14 @@ public class State implements Cloneable {
 
     }
 
-    public boolean isGameEnded() {
-        for (Player player : players) {
-            if (player.getNumberOfTroops() == 0) {
-                return true;
-            }
-        }
-        return false;
-    }
 
-    private ArrayList<Territory> cloneArrayListTerritories(ArrayList<Territory> territories) {
+
+
+
+    private ArrayList<Territory> cloneArrayListTerritories(ArrayList<Territory> territories, State state) {
         ArrayList<Territory> ts = new ArrayList<>();
         for (Territory t : territories) {
-            ts.add((Territory) t.clone());
+            ts.add((Territory) t.clone(state));
         }
 
         return ts;

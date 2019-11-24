@@ -2,6 +2,7 @@ package riskgame.Agents;
 
 import riskgame.State;
 import riskgame.Territory;
+import riskgame.Utils;
 
 public class Passive extends Player {
 
@@ -9,16 +10,18 @@ public class Passive extends Player {
         super(turn);
     }
 
-    
     @Override
     public State play(State state) {
         state.setPlayerTurn(this.getTurn());
-        
+
         if (this.getBonusTroops() > 0) {
             State newState = (State) state.clone();
             Territory territory = newState.getPlayers().get(this.getTurn()).getTerritoryWithLowestTroops(newState);
 
             territory.setNumberOfTroops(territory.getNumberOfTroops() + newState.getPlayers().get(this.getTurn()).getBonusTroops());
+            newState.getPlayers().get(this.getTurn()).setBonusTroops(0);
+//            Utils.printState(newState);
+
             return newState;
         }
         return state;
