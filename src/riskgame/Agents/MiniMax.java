@@ -7,7 +7,6 @@ import riskgame.RiskGame;
 import riskgame.State;
 import riskgame.Territory;
 import riskgame.Utils;
-import sun.net.www.http.Hurryable;
 
 public class MiniMax extends Player {
 
@@ -173,30 +172,6 @@ public class MiniMax extends Player {
             }
         }
         return enemy;
-    }
-
-    private State placeTroops(int t, State state) {
-        State temp = (State) state.clone();
-        temp.getTerritories().get(t - 1).setNumberOfTroops(temp.getTerritories().get(t - 1).getNumberOfTroops() + temp.getPlayers().get(state.getPlayerTurn()).getBonusTroops());
-        temp.getPlayers().get(temp.getPlayerTurn()).setBonusTroops(0);
-        return temp;
-    }
-
-    private State evaluatePlacement(State newState) {
-        ArrayList<Integer> mytert = new ArrayList<>(newState.getPlayers().get(newState.getPlayerTurn()).getTerritories());
-        double max = Heuristic.evaluateTerritory(mytert.get(0), newState);
-        int territory = mytert.get(0);
-
-        for (int i = 1; i < mytert.size(); i++) {
-            double m = Heuristic.evaluateTerritory(mytert.get(i), newState);
-
-            if (m > max) {
-                territory = mytert.get(i);
-            }
-        }
-        State temp = (State) newState.clone();
-        System.out.println("Placing " + temp.getPlayers().get(temp.getPlayerTurn()).getBonusTroops() + " troops on " + territory);
-        return placeTroops(territory, temp);
     }
 
     private State simulateWin(int number, int number0, State temp) {

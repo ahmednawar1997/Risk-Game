@@ -1,6 +1,7 @@
 package riskgame;
 
 import java.util.ArrayList;
+import riskgame.Agents.A_Star;
 
 import riskgame.Agents.Aggressive;
 import riskgame.Agents.MiniMax;
@@ -13,9 +14,8 @@ public class RiskGame {
         Utils utils = new Utils();
 
         ArrayList<Territory> usaTerritories = utils.initUSA();
-        Player player1 = new MiniMax(0);
-        Player player2 = new Passive(1);
-
+        Player player1 = new A_Star(0, 10000, 2);
+        Player player2 = new A_Star(1, 10000, 2);
         utils.divideTerritoriesRandom(player1, player2, usaTerritories);
 
         ArrayList<Player> players = new ArrayList<>();
@@ -42,6 +42,7 @@ public class RiskGame {
                 state.setPlayerTurn(i);
                 state.getPlayers().get(i).addBonusTroops();
                 state = state.getPlayers().get(i).play(state);
+                System.out.println("*************************************************************");
             }
         }
     }
@@ -56,20 +57,4 @@ public class RiskGame {
         }
         return false;
     }
-
-//    public static void printState(State temp) {
-//        ArrayList<Integer> s = new ArrayList<>(temp.getPlayers().get(0).getTerritories());
-//        System.out.println("MinMax ownes: ");
-//        for (int i = 0; i < s.size(); i++) {
-//            System.out.print("Territory number: " + s.get(i) + " with " + temp.getTerritories().get(s.get(i) - 1).getNumberOfTroops() + " troops");
-//        }
-//        System.out.println("");
-//
-//        s = new ArrayList<>(temp.getPlayers().get(1).getTerritories());
-//        System.out.println("Pssive ownnes: ");
-//        for (int i = 0; i < s.size(); i++) {
-//            System.out.print("Territory number: " + s.get(i) + " with " + temp.getTerritories().get(s.get(i) - 1).getNumberOfTroops() + " troops");
-//        }
-//        System.out.println("");
-//    }
 }

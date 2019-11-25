@@ -21,12 +21,11 @@ public class Aggressive extends Player {
 
         /*Attack*/
         boolean conquered = false;
-
+        Territory enemyTerritory = getTerritoryWithleastTroopsFromNeighbours(territory, newState);
         while (!conquered) {
-            if(territory.getNumberOfTroops()==1){
+            if (territory.getNumberOfTroops() == 1) {
                 break;
             }
-            Territory enemyTerritory = getTerritoryWithleastTroopsFromNeighbours(territory, newState);
             conquered = attack(territory, enemyTerritory, newState);
 
         }
@@ -48,7 +47,8 @@ public class Aggressive extends Player {
         }
         return highestTerritory;
     }
- public Territory getTerritoryWithleastTroopsFromNeighbours(Territory territory, State state) {
+
+    public Territory getTerritoryWithleastTroopsFromNeighbours(Territory territory, State state) {
         int max = Integer.MAX_VALUE;
 
         ArrayList<Territory> attackableNeighbours = getAttackableNeighbours(territory, state);
@@ -62,6 +62,7 @@ public class Aggressive extends Player {
         }
         return highestTerritory;
     }
+
     public ArrayList<Territory> getAttackableNeighbours(Territory territory, State state) {
         int[] neighbours = territory.getNeighbours();
         ArrayList<Territory> attackableNeighbours = new ArrayList<>();
@@ -81,6 +82,38 @@ public class Aggressive extends Player {
             }
         }
         return enemy;
+    }
+
+    protected boolean attack(Territory territory, Territory enemyTerritory, State newState) {
+        Player attackingPlayer = newState.getPlayers().get(territory.getOwner(newState));
+        Player defendingPlayer = newState.getPlayers().get(enemyTerritory.getOwner(newState));
+
+        int attackingNumber = calculateAttackingNumber(territory);
+        int defendingNumber = calculateDefendingNumber(enemyTerritory);
+
+        System.out.println("Player " + attackingPlayer.getTurn() + " attacking");
+        System.out.println("Troops Attacking: " + attackingNumber + " vs " + defendingNumber);
+        System.out.println("Total Troops in Attacking: " + territory.getNumberOfTroops() + " vs " + enemyTerritory.getNumberOfTroops());
+        System.out.println("Attacking " + territory.getNumber() + " on " + enemyTerritory.getNumber());
+
+        if (isAttackingWon(attackingNumber, defendingNumber)) {
+            enemyTerritory.setNumberOfTroops(enemyTerritory.getNumberOfTroops() - defendingNumber);
+
+            System.out.println("attacking won");
+            if (enemyTerritory.getNumberOfTroops() == 0) {
+                System.out.println("Player " + attackingPlayer.getTurn() + " won " + enemyTerritory.getNumber() + " with Territory " + territory.getNumber());
+
+                conquer(territory, enemyTerritory, attackingPlayer, defendingPlayer);
+                return true;
+            }
+
+        } else {
+            System.out.println("defending won");
+
+            territory.setNumberOfTroops(territory.getNumberOfTroops() - attackingNumber);
+        }
+
+        return false;
     }
 
 }

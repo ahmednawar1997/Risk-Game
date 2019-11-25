@@ -49,13 +49,14 @@ public class Territory implements Cloneable {
         }
         return cloned;
     }
-    
-    public int getOwner(State state){
-        for(Player p: state.getPlayers()){
-            if(p.getTerritories().contains(number)){
+
+    public int getOwner(State state) {
+        for (Player p : state.getPlayers()) {
+            if (p.getTerritories().contains(number)) {
                 return p.getTurn();
             }
         }
+        System.out.println("Cannot find territory:" + number);
         return -1;
     }
 

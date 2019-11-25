@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import riskgame.Heuristic;
 import riskgame.State;
 import riskgame.Territory;
 
@@ -61,6 +62,7 @@ public abstract class Player implements Cloneable {
         return cloned;
 
     }
+
     public ArrayList<Territory> getAttackableNeighbours(Territory territory, State state) {
         int[] neighbours = territory.getNeighbours();
         ArrayList<Territory> attackableNeighbours = new ArrayList<>();
@@ -102,9 +104,7 @@ public abstract class Player implements Cloneable {
             state.getTerritories().get(ts.get(rndm) - 1).setNumberOfTroops(state.getTerritories().get(ts.get(rndm) - 1).getNumberOfTroops() + 1);
 //            System.out.println("number of troops "+ts.get(rndm));
         }
-        
-        
-        
+
     }
 
     public Territory getTerritoryWithLowestTroops(State state) {
@@ -121,10 +121,6 @@ public abstract class Player implements Cloneable {
         }
         return lowestTerritory;
     }
-
-   
-
-   
 
     public Territory getTerritoryWithHighestTroops(State state) {
         int max = Integer.MIN_VALUE;
@@ -180,11 +176,11 @@ public abstract class Player implements Cloneable {
         System.out.println("Player " + attackingPlayer.getTurn() + " attacking");
         System.out.println("Troops Attacking: " + attackingNumber + " vs " + defendingNumber);
         System.out.println("Total Troops in Attacking: " + territory.getNumberOfTroops() + " vs " + enemyTerritory.getNumberOfTroops());
-        System.out.println("Attacking "+territory.getNumber()+" on "+enemyTerritory.getNumber());
+        System.out.println("Attacking " + territory.getNumber() + " on " + enemyTerritory.getNumber());
 
         if (isAttackingWon(attackingNumber, defendingNumber)) {
             enemyTerritory.setNumberOfTroops(enemyTerritory.getNumberOfTroops() - defendingNumber);
-         
+
             System.out.println("attacking won");
             if (enemyTerritory.getNumberOfTroops() == 0) {
                 System.out.println("Player " + attackingPlayer.getTurn() + " won " + enemyTerritory.getNumber() + " with Territory " + territory.getNumber());
@@ -196,21 +192,21 @@ public abstract class Player implements Cloneable {
         } else {
             System.out.println("defending won");
 
-            territory.setNumberOfTroops(territory.getNumberOfTroops() - attackingNumber);            
+            territory.setNumberOfTroops(territory.getNumberOfTroops() - attackingNumber);
         }
-      
+
         return false;
     }
 
-    private int calculateAttackingNumber(Territory territory) {
+    protected int calculateAttackingNumber(Territory territory) {
         if (territory.getNumberOfTroops() > 3) {
             return 3;
         } else {
-            return (territory.getNumberOfTroops()-1);
+            return (territory.getNumberOfTroops() - 1);
         }
     }
 
-    private int calculateDefendingNumber(Territory territory) {
+    protected int calculateDefendingNumber(Territory territory) {
         if (territory.getNumberOfTroops() >= 2) {
             return 2;
         } else {
@@ -218,19 +214,44 @@ public abstract class Player implements Cloneable {
         }
     }
 
-    private boolean isAttackingWon(int attackingNumber, int defendingNumber) {
+    protected boolean isAttackingWon(int attackingNumber, int defendingNumber) {
 
         double rndm = Math.random();
-        double prob = (double)attackingNumber / (double)(attackingNumber + defendingNumber);
+        double prob = (double) attackingNumber / (double) (attackingNumber + defendingNumber);
         return (rndm < prob);
 
     }
 
-    private void conquer(Territory attck, Territory dfnd, Player attackingPlayer, Player defendingPlayer) {
+    protected void conquer(Territory attck, Territory dfnd, Player attackingPlayer, Player defendingPlayer) {
         dfnd.setNumberOfTroops(attck.getNumberOfTroops() - 1);
         attck.setNumberOfTroops(1);
         attackingPlayer.getTerritories().add(dfnd.getNumber());
         defendingPlayer.getTerritories().remove(dfnd.getNumber());
+    }
+
+    protected State placeTroops(int t, State temp) {
+//        State temp = (State) state.clone();
+        temp.getTerritories().get(t - 1).setNumberOfTroops(temp.getTerritories().get(t - 1).getNumberOfTroops() + temp.getPlayers().get(temp.getPlayerTurn()).getBonusTroops());
+        temp.getPlayers().get(temp.getPlayerTurn()).setBonusTroops(0);
+        return temp;
+    }
+
+    protected State evaluatePlacement(State newState) {
+        ArrayList<Integer> mytert = new ArrayList<>(newState.getPlayers().get(newState.getPlayerTurn()).getTerritories());
+        double max = Heuristic.evaluateTerritory(mytert.get(0), newState);
+        int territory = mytert.get(0);
+
+        for (int i = 1; i < mytert.size(); i++) {
+            double m = Heuristic.evaluateTerritory(mytert.get(i), newState);
+
+            if (m > max) {
+                territory = mytert.get(i);
+                max = m;
+            }
+        }
+        State temp = (State) newState.clone();
+        System.out.println("Placing " + temp.getPlayers().get(temp.getPlayerTurn()).getBonusTroops() + " troops on " + territory);
+        return placeTroops(territory, temp);
     }
 
     public abstract State play(State state);
