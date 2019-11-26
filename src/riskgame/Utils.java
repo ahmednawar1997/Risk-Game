@@ -2,9 +2,17 @@ package riskgame;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.PriorityQueue;
 import riskgame.Agents.Player;
 
 public class Utils {
+
+    public static void printHeap(PriorityQueue<State> heap) {
+        for(State state: heap){
+            System.out.print(state.getCost()+",");
+        }
+        System.out.println("");
+    }
 
     public ArrayList<Territory> initUSA() {
         ArrayList<Territory> ts = new ArrayList<>();

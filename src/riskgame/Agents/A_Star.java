@@ -81,8 +81,11 @@ public class A_Star extends Player {
         double Hn = 0;
         exploredCount = 0;
         State newState = null;
+        int Considered = 0;
+        int notConsidered = 0;
         while (!heap.isEmpty()) {
-            System.out.println("Heap: "+heap.peek().getCost());
+//            Utils.printHeap(heap);
+//            System.out.println("Heap: "+heap.peek().getCost());
 
             newState = (State) heap.poll().clone();
             exploredCount++;
@@ -108,7 +111,13 @@ public class A_Star extends Player {
                             isEndTurn = false;
                             Hn = Heuristic.calculateHeuristic(tempState.getPlayers().get(tempState.getPlayerTurn()), tempState);
                             tempState.setCost(Hn + tempState.getDepth());
+                            System.out.println("cost:" + Hn + tempState.getDepth());
                             heap.add(tempState);
+//                            System.out.println("Considered:"+ ++Considered);
+
+                        } else {
+
+//                            System.out.println("Not Considered:"+ ++notConsidered);
                         }
                     }
                 }
