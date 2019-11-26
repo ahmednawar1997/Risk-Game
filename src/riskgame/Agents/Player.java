@@ -84,13 +84,6 @@ public abstract class Player implements Cloneable {
         return enemy;
     }
 
-    public State placeTroops(int t, State state) {
-        State temp = (State) state.clone();
-        temp.getTerritories().get(t - 1).setNumberOfTroops(temp.getTerritories().get(t - 1).getNumberOfTroops() + temp.getPlayers().get(state.getPlayerTurn()).getBonusTroops());
-        temp.getPlayers().get(temp.getPlayerTurn()).setBonusTroops(0);
-        return temp;
-    }
-
     private static HashSet<Integer> cloneHashSet(HashSet<Integer> territories) {
         HashSet<Integer> set = new HashSet<>();
         territories.stream().forEach((t) -> {
@@ -200,8 +193,6 @@ public abstract class Player implements Cloneable {
             System.out.println("defending won");
 
             territory.setNumberOfTroops(territory.getNumberOfTroops() - attackingNumber);
-            // System.out.println("Player " + defendingPlayer.getTurn() + " won " + territory.getNumber() + " with Territory " + enemyTerritory.getNumber());
-
         }
 
         return false;
@@ -238,7 +229,13 @@ public abstract class Player implements Cloneable {
         defendingPlayer.getTerritories().remove(dfnd.getNumber());
     }
 
-  
+    protected State placeTroops(int t, State temp) {
+//        State temp = (State) state.clone();
+        temp.getTerritories().get(t - 1).setNumberOfTroops(temp.getTerritories().get(t - 1).getNumberOfTroops() + temp.getPlayers().get(temp.getPlayerTurn()).getBonusTroops());
+        temp.getPlayers().get(temp.getPlayerTurn()).setBonusTroops(0);
+        return temp;
+    }
+
     protected State evaluatePlacement(State newState) {
         ArrayList<Integer> mytert = new ArrayList<>(newState.getPlayers().get(newState.getPlayerTurn()).getTerritories());
         double max = Heuristic.evaluateTerritory(mytert.get(0), newState);
