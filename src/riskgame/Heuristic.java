@@ -6,34 +6,68 @@ import riskgame.Agents.Player;
 public class Heuristic {
 
     public static int evaluateUtility(State state) {
-    
-        return 50-state.getPlayers().get(1).getTerritories().size();
+        ArrayList<Integer> mytert = new ArrayList<>(state.getPlayers().get(0).getTerritories());
+        double bsr = 0;
+        for (int i = 0; i < mytert.size(); i++) {
+            bsr += 1.0 / evaluateTerritory(mytert.get(i), state);
+        }
+        return (int) Math.round(bsr + state.getPlayers().get(state.getPlayerTurn()).getTerritories().size());
     }
 
     public static double evaluateTerritory(Integer get, State newState) {
-       
-       double optroops=0.0;
-       Territory t = newState.getTerritories().get(get-1);
-       double mytroops=t.getNumberOfTroops();
-       ArrayList<Territory> a= newState.getPlayers().get(newState.getPlayerTurn()).getAttackableNeighbours(t, newState);
+
+        double optroops = 0.0;
+        Territory t = newState.getTerritories().get(get - 1);
+        double mytroops = t.getNumberOfTroops();
+        ArrayList<Territory> a = newState.getPlayers().get(newState.getPlayerTurn()).getAttackableNeighbours(t, newState);
         for (int i = 0; i < a.size(); i++) {
-            optroops+=a.get(i).getNumberOfTroops();
+            optroops += a.get(i).getNumberOfTroops();
         }
-        
-        return optroops/mytroops;
+
+        return optroops / mytroops;
     }
 
     public static double evaluateAttack(int number, int get, State temp) {
-        double att= (temp.getTerritories().get(number-1).getNumberOfTroops()-1)/3;
-        double def= (temp.getTerritories().get(get-1).getNumberOfTroops())/2;
-        
-        return att/def;
+        double att = (temp.getTerritories().get(number - 1).getNumberOfTroops() - 1) / 3;
+        double def = (temp.getTerritories().get(get - 1).getNumberOfTroops()) / 2;
+
+        return att / def;
+    }
+
+    public static int evaluateHurestic(State temp) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+ 
+
+    public static double calculateHeuristic(Player player, State newState) {
+        double Hn = getTotalBSR(player, newState);
+        Hn += newState.getTerritories().size() - newState.getPlayers().get(player.getTurn()).getTerritories().size();
+        return Hn;
+    }
+
+    public static double getTotalBSR(Player player, State newState) {
+
+        double totalBSR = 0.0;
+        for (int number : player.getTerritories()) {
+            totalBSR += BSR(newState.getTerritories().get(number - 1), newState);
+        }
+        return totalBSR;
+    }
+
+    public static double BSR(Territory territory, State newState) {
+
+        double optroops = 0.0;
+        double mytroops = territory.getNumberOfTroops();
+        ArrayList<Territory> a = newState.getPlayers().get(newState.getPlayerTurn()).getAttackableNeighbours(territory, newState);
+        for (int i = 0; i < a.size(); i++) {
+            optroops += a.get(i).getNumberOfTroops();
+        }
+
+        return (optroops / mytroops) * 1.0;
     }
 
     
-
-    private Heuristic() {
-    }
 
     public static int cost1(State state) {
         ArrayList<Territory> territories = state.getTerritories();
@@ -51,5 +85,4 @@ public class Heuristic {
 //        }
 //        return 0;
 //    }
-
 }

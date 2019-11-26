@@ -1,7 +1,10 @@
 package riskgame;
 
 import java.util.ArrayList;
+
+import riskgame.Agents.Aggressive;
 import riskgame.Agents.MiniMax;
+import riskgame.Agents.Pacifist;
 import riskgame.Agents.Passive;
 import riskgame.Agents.Player;
 
@@ -11,49 +14,64 @@ public class RiskGame {
         Utils utils = new Utils();
 
         ArrayList<Territory> usaTerritories = utils.initUSA();
-        Player player1 = new MiniMax(0);
-        Player player2 = new Passive(1);
-
-        utils.divideTerritoriesRandom(player1, player2, usaTerritories);
+        Player player1 = new MiniMax(0,9,2.2,true);
+        //Player player1 = new Aggressive(0);
+        Player player2 = new Aggressive(1);
+       // Player player3 = new Passive(2);
+        
 
         ArrayList<Player> players = new ArrayList<>();
         players.add(player1);
         players.add(player2);
-        player1.setBonusTroops(50);
-        player2.setBonusTroops(50);
-        System.out.println("--" + player1.getTerritories().size());
+       // players.add(player3);
+        utils.divideTerritoriesRandom(players, usaTerritories);
+
         State state = new State(usaTerritories, players,0);
+       utils.divideTroops(state);
 
-        player1.divideTroopsRandom(state);
+        Utils.printState(state);
 
-       player2.divideTroopsRandom(state);
-
-        play(state);
+        new RiskGame().startGame(state);
     }
 
-    private static void play(State state) {
-        int i=0;
-        while (!RiskGame.isGameEnded(state)) {
-            System.out.println("sassa");
-            state.getPlayers().get(0).setBonusTroops(state.getPlayers().get(0).getTerritories().size() / 3);
+    private void startGame(State state) {
+        int turns=0;
+        while (true) {
+            turns++;
+            for (int i = 0; i < state.getPlayers().size(); i++) {
+                Utils.printState(state);
 
-            State s = state.getPlayers().get(0).play(state);
-            state.getPlayers().get(1).setBonusTroops(state.getPlayers().get(1).getTerritories().size() / 3);
-            State b = s.getPlayers().get(1).play(s);
-            state=(State) b.clone();
-            i++;
-        }
-        System.out.println("Winning in "+i+" turns");
-    }
-
-    public static boolean isGameEnded(State state) {
-        for (Player player : state.getPlayers()) {
-            if (player.getTerritories().isEmpty()) {
-                return true;
+                if (isGameEnded(state)) {
+                    System.out.println("Turns = "+turns);
+                    return;
+                }
+                state.setPlayerTurn(i);
+                state.getPlayers().get(i).addBonusTroops();
+                state = state.getPlayers().get(i).play(state);
+                System.out.println("*************************************************************");
             }
+        }
+        
+    }
+
+    public boolean isGameEnded(State state) {
+        int numOfSurviving=0;
+        for (Player player : state.getPlayers()) {
+
+            if (!player.getTerritories().isEmpty()) {
+               
+               numOfSurviving++;
+                
+            }
+        }
+        if(numOfSurviving==1){
+            return true;
         }
         return false;
     }
+
+    
+
 
     public static void printState(State temp) {
          ArrayList<Integer> s = new ArrayList<>(temp.getPlayers().get(0).getTerritories());
