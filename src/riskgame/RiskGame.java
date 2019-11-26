@@ -15,7 +15,7 @@ public class RiskGame {
 
         ArrayList<Territory> usaTerritories = utils.initUSA();
         Player player1 = new A_Star(0, 10000, 2);
-        Player player2 = new A_Star(1, 10000, 2);
+        Player player2 = new Aggressive(1);
         utils.divideTerritoriesRandom(player1, player2, usaTerritories);
 
         ArrayList<Player> players = new ArrayList<>();

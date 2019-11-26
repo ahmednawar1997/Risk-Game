@@ -26,7 +26,6 @@ public class A_Star extends Player {
 
     @Override
     public State play(State state) {
-        exploredCount = 0;
         isEndTurn = false;
         this.heap = new PriorityQueue<>();
         state.setPlayerTurn(this.getTurn());
@@ -34,12 +33,12 @@ public class A_Star extends Player {
 
         while (!isEndTurn) {
 
-            isEndTurn = true;
             newState.setPreviousState(null);
             System.out.println("A_Star Thinking...");
-            newState = getShortestPathToGoal(newState);
 
+            newState = getShortestPathToGoal(newState);
             System.out.println("Found Fastest Route");
+
             if (isEndTurn) {
                 newState.getActions().setEndTurn(true);
                 System.out.println("A_Star Ended Turnnn");
@@ -47,6 +46,7 @@ public class A_Star extends Player {
             }
             State afterRootState = getAfterRootState(newState);
             State root = afterRootState.getPreviousState();
+
             Territory attackingTerritory = afterRootState.getTerritories().get(afterRootState.getActions().getAttackingTerritory() - 1);
             Territory defendingTerritory = afterRootState.getTerritories().get(afterRootState.getActions().getDefendingTerritory() - 1);
 
@@ -82,9 +82,11 @@ public class A_Star extends Player {
         exploredCount = 0;
         State newState = null;
         while (!heap.isEmpty()) {
+            System.out.println("Heap: "+heap.peek().getCost());
+
             newState = (State) heap.poll().clone();
             exploredCount++;
-//            System.out.println("Explored: " + exploredCount);
+            System.out.println("Explored: " + exploredCount);
 //            System.out.println("Exploring depth: " + newState.getDepth());
 
             if (isGoal(newState) || newState.getDepth() >= maxDepth) {
@@ -95,7 +97,7 @@ public class A_Star extends Player {
 
             for (int number : newState.getPlayers().get(this.getTurn()).getTerritories()) {
                 Territory territory = newState.getTerritories().get(number - 1);
-                ArrayList<Territory> attackableNeighbours = newState.getPlayers().get(this.getTurn()).getAttackableNeighbours(territory, newState);
+                ArrayList<Territory> attackableNeighbours = newState.getPlayers().get(newState.getPlayerTurn()).getAttackableNeighbours(territory, newState);
 
                 for (Territory enemyNeigbour : attackableNeighbours) {
                     if (territory.getNumberOfTroops() > 2) {
@@ -104,9 +106,8 @@ public class A_Star extends Player {
                             tempState.setActions(new StateActions(territory.getNumber(), enemyNeigbour.getNumber()));
                             tempState.setPreviousState(newState);
                             isEndTurn = false;
-                            Hn = Heuristic.calculateHeuristic(this, newState);
+                            Hn = Heuristic.calculateHeuristic(tempState.getPlayers().get(tempState.getPlayerTurn()), tempState);
                             tempState.setCost(Hn + tempState.getDepth());
-
                             heap.add(tempState);
                         }
                     }
