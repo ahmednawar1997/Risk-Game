@@ -11,25 +11,17 @@ public class State implements Cloneable, Comparable<State> {
     private ArrayList<Player> players;
     private int playerTurn;
     private int depth;
-
     private double cost;
     private State previousState;
     private StateActions actions;
 
-  
     public State(ArrayList<Territory> territories, ArrayList<Player> players, int depth) {
-
         this.territories = territories;
         this.players = players;
         this.playerTurn = 0;
-
-      
         this.depth = depth;
         this.actions = new StateActions();
-
     }
-
-
 
     public StateActions getActions() {
         return actions;
@@ -54,7 +46,6 @@ public class State implements Cloneable, Comparable<State> {
     public void setCost(double cost) {
         this.cost = cost;
     }
-
 
     public int getDepth() {
         return depth;

@@ -1,6 +1,7 @@
 package riskgame;
 
 import java.util.ArrayList;
+import riskgame.Agents.A_Star;
 
 import riskgame.Agents.Aggressive;
 import riskgame.Agents.MiniMax;
@@ -14,10 +15,11 @@ public class RiskGame {
         Utils utils = new Utils();
 
         ArrayList<Territory> usaTerritories = utils.initUSA();
-        Player player1 = new MiniMax(0,9,2.2,true);
-        //Player player1 = new Aggressive(0);
-        Player player2 = new Aggressive(1);
-       // Player player3 = new Passive(2);
+       Player player1 = new MiniMax(0,7,2.5,true);
+        Player player2= new A_Star(1,1000,2.8);
+
+       
+        //Player player3 = new Aggressive(2);
         
 
         ArrayList<Player> players = new ArrayList<>();
