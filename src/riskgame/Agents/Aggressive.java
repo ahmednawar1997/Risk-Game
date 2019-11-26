@@ -13,7 +13,9 @@ public class Aggressive extends Player {
 
     @Override
     public State play(State state) {
-
+        if (state.getPlayers().get(this.getTurn()).getTerritories().isEmpty()) {
+            return state;
+        }
         State newState = (State) state.clone();
         Territory territory = newState.getPlayers().get(this.getTurn()).getTerritoryWithHighestTroops(newState);/////////
         territory.setNumberOfTroops(territory.getNumberOfTroops() + newState.getPlayers().get(this.getTurn()).getBonusTroops());
@@ -21,11 +23,15 @@ public class Aggressive extends Player {
 
         /*Attack*/
         boolean conquered = false;
+
         Territory enemyTerritory = getTerritoryWithleastTroopsFromNeighbours(territory, newState);
+
         while (!conquered) {
             if (territory.getNumberOfTroops() == 1) {
                 break;
             }
+
+
             conquered = attack(territory, enemyTerritory, newState);
 
         }

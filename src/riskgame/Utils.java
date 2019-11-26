@@ -69,13 +69,37 @@ public class Utils {
         return ts;
     }
 
-    public void divideTerritoriesRandom(Player player1, Player player2, ArrayList<Territory> territories) {
-        for (Territory t : territories) {
-            if (Math.round(Math.random()) == 1) {
-                player1.addTerritory(t.getNumber());
-            } else {
-                player2.addTerritory(t.getNumber());
+    public void divideTerritoriesRandom(ArrayList<Player> p, ArrayList<Territory> territories) {
+        int i = 0;
+        while (i < territories.size()) {
+            for (int j = 0; j < p.size() && i < territories.size(); j++) {
+                p.get(j).addTerritory(territories.get(i).getNumber());
+                i++;
             }
+
+        }
+
+    }
+
+    
+
+    void divideTroops(State state) {
+        ArrayList<Player> p = state.getPlayers();
+        
+        for (int i = 0; i < p.size(); i++) {
+            int numberOfTroops=state.getTerritories().size();
+            int numberOfTerritories = p.get(i).getTerritories().size();
+            for (int num : p.get(i).getTerritories()) {
+                state.getTerritories().get(num - 1).setNumberOfTroops(1);
+                numberOfTroops--;
+            }
+            ArrayList<Integer> ts = new ArrayList<>(p.get(i).getTerritories());
+            for (int j = 0; j< numberOfTroops; j++) {
+                int rndm = (int) Math.round(Math.random() * (numberOfTerritories - 1));
+                state.getTerritories().get(ts.get(rndm) - 1).setNumberOfTroops(state.getTerritories().get(ts.get(rndm) - 1).getNumberOfTroops() + 1);
+//            System.out.println("number of troops "+ts.get(rndm));
+            }
+
         }
     }
 
@@ -93,3 +117,5 @@ public class Utils {
     }
 
 }
+
+

@@ -6,8 +6,12 @@ import riskgame.Agents.Player;
 public class Heuristic {
 
     public static int evaluateUtility(State state) {
-
-        return 50 - state.getPlayers().get(1).getTerritories().size();
+        ArrayList<Integer> mytert = new ArrayList<>(state.getPlayers().get(0).getTerritories());
+        double bsr = 0;
+        for (int i = 0; i < mytert.size(); i++) {
+            bsr += 1.0 / evaluateTerritory(mytert.get(i), state);
+        }
+        return (int) Math.round(bsr + state.getPlayers().get(state.getPlayerTurn()).getTerritories().size());
     }
 
     public static double evaluateTerritory(Integer get, State newState) {
@@ -22,6 +26,19 @@ public class Heuristic {
 
         return optroops / mytroops;
     }
+
+    public static double evaluateAttack(int number, int get, State temp) {
+        double att = (temp.getTerritories().get(number - 1).getNumberOfTroops() - 1) / 3;
+        double def = (temp.getTerritories().get(get - 1).getNumberOfTroops()) / 2;
+
+        return att / def;
+    }
+
+    public static int evaluateHurestic(State temp) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+ 
 
     public static double calculateHeuristic(Player player, State newState) {
         double Hn = getTotalBSR(player, newState);
@@ -50,12 +67,7 @@ public class Heuristic {
         return (optroops / mytroops) * 1.0;
     }
 
-    public static double evaluateAttack(int number, int get, State temp) {
-        double att = (temp.getTerritories().get(number - 1).getNumberOfTroops() - 1) / 3;
-        double def = (temp.getTerritories().get(get - 1).getNumberOfTroops()) / 2;
-
-        return att / def;
-    }
+    
 
     public static int cost1(State state) {
         ArrayList<Territory> territories = state.getTerritories();
