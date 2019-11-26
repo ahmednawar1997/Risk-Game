@@ -73,18 +73,7 @@ public class Utils {
 
     }
 
-    public static void printState(State state) {
-        System.out.println("");
-        for (Player p : state.getPlayers()) {
-            System.out.println("Player: " + p.getTurn() + " *" + p.getClass().getSimpleName() + "*");
-            System.out.println("Territories:" + p.getTerritories());
-        }
-//        for (Territory t : state.getTerritories()) {
-//            System.out.println(t.getNumber() + " : " + t.getNumberOfTroops());
-//        }
-
-        System.out.println("");
-    }
+    
 
     void divideTroops(State state) {
         ArrayList<Player> p = state.getPlayers();

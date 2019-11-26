@@ -26,11 +26,14 @@ public class A_Star extends Player {
 
     @Override
     public State play(State state) {
+        
         isEndTurn = false;
         this.heap = new PriorityQueue<>();
         state.setPlayerTurn(this.getTurn());
         State newState = getBestPlacement(state);
-
+if (state.getPlayers().get(this.getTurn()).getTerritories().isEmpty()) {
+            return state;
+        }
         while (!isEndTurn) {
 
             newState.setPreviousState(null);
@@ -59,7 +62,7 @@ public class A_Star extends Player {
         }
 
         System.out.println("A_Star Ended Turn");
-
+        heap=null;
         return newState;
     }
 
@@ -82,11 +85,11 @@ public class A_Star extends Player {
         exploredCount = 0;
         State newState = null;
         while (!heap.isEmpty()) {
-            System.out.println("Heap: "+heap.peek().getCost());
+//            System.out.println("Heap: "+heap.peek().getCost());
 
             newState = (State) heap.poll().clone();
             exploredCount++;
-            System.out.println("Explored: " + exploredCount);
+//            System.out.println("Explored: " + exploredCount);
 //            System.out.println("Exploring depth: " + newState.getDepth());
 
             if (isGoal(newState) || newState.getDepth() >= maxDepth) {
