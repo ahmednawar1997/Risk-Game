@@ -24,11 +24,17 @@ public abstract class Player implements Cloneable {
     }
 
     public void setBonusTroops(int bonusTroops) {
+        if(bonusTroops<3){
+            bonusTroops=3;
+        }
         this.bonusTroops = bonusTroops;
     }
 
     public void addBonusTroops() {
         bonusTroops += territories.size() / 3;
+         if(bonusTroops<3){
+            bonusTroops=3;
+        }
     }
 
     public int getTurn() {
@@ -184,7 +190,7 @@ public abstract class Player implements Cloneable {
             System.out.println("attacking won");
             if (enemyTerritory.getNumberOfTroops() == 0) {
                 System.out.println("Player " + attackingPlayer.getTurn() + " won " + enemyTerritory.getNumber() + " with Territory " + territory.getNumber());
-
+                 
                 conquer(territory, enemyTerritory, attackingPlayer, defendingPlayer);
                 return true;
             }
@@ -250,6 +256,7 @@ public abstract class Player implements Cloneable {
             }
         }
         State temp = (State) newState.clone();
+        temp.getGui().data.add("Placing " + temp.getPlayers().get(temp.getPlayerTurn()).getBonusTroops() + " troops on " + territory);
         System.out.println("Placing " + temp.getPlayers().get(temp.getPlayerTurn()).getBonusTroops() + " troops on " + territory);
         return placeTroops(territory, temp);
     }

@@ -16,9 +16,14 @@ public class Aggressive extends Player {
         if (state.getPlayers().get(this.getTurn()).getTerritories().isEmpty()) {
             return state;
         }
+                
         State newState = (State) state.clone();
+        
         Territory territory = newState.getPlayers().get(this.getTurn()).getTerritoryWithHighestTroops(newState);/////////
         territory.setNumberOfTroops(territory.getNumberOfTroops() + newState.getPlayers().get(this.getTurn()).getBonusTroops());
+        System.out.println("Aggrassive placing "+newState.getPlayers().get(this.getTurn()).getBonusTroops() +" troops on "+territory.getNumber());
+         newState.getGui().data.add("Aggrassive placing "+newState.getPlayers().get(this.getTurn()).getBonusTroops() +" troops on "+territory.getNumber());
+//         newState.getGui().listView.scrollTo(newState.getGui().data.size()-1);
         newState.getPlayers().get(this.getTurn()).setBonusTroops(0);
 
         /*Attack*/
@@ -31,10 +36,12 @@ public class Aggressive extends Player {
                 break;
             }
 
-
+             newState.getGui().data.add("Attacking " + enemyTerritory.getNumber() + " with  " + territory.getNumber());
+            //   newState.getGui().listView.scrollTo(newState.getGui().data.size()-1);
             conquered = attack(territory, enemyTerritory, newState);
 
         }
+        newState.getGui().Recolor(newState);
         return newState;
 
     }

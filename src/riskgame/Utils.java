@@ -2,14 +2,15 @@ package riskgame;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.PriorityQueue;
 import riskgame.Agents.Player;
 
 public class Utils {
 
     public static void printHeap(PriorityQueue<State> heap) {
-        for(State state: heap){
-            System.out.print(state.getCost()+",");
+        for (State state : heap) {
+            System.out.print(state.getCost() + ",");
         }
         System.out.println("");
     }
@@ -70,31 +71,43 @@ public class Utils {
     }
 
     public void divideTerritoriesRandom(ArrayList<Player> p, ArrayList<Territory> territories) {
-        int i = 0;
-        while (i < territories.size()) {
-            for (int j = 0; j < p.size() && i < territories.size(); j++) {
-                p.get(j).addTerritory(territories.get(i).getNumber());
-                i++;
+        HashSet<Integer> set = new HashSet<>();
+        int nPerPlayer = territories.size() / p.size();
+        for (int i = 0; i < nPerPlayer; i++) {
+            for (Player player : p) {
+                int rndm = (int) Math.round(Math.random() * (territories.size() - 1));
+                while (set.contains(rndm)) {
+                    rndm = (int) Math.round(Math.random() * (territories.size() - 1));
+                }
+                set.add(rndm);
+                player.addTerritory(rndm+1);
             }
-
+        }
+        for (int i = 0; i < territories.size() - set.size(); i++) {
+            int k = 0;
+            int rndm = (int) Math.round(Math.random() * (territories.size() - 1));
+            while (set.contains(rndm)) {
+                rndm = (int) Math.round(Math.random() * (territories.size() - 1));
+            }
+            set.add(rndm);
+            p.get(k).addTerritory(rndm+1);
+            k = (k + 1) % p.size();
         }
 
     }
 
-    
-
-    void divideTroops(State state) {
+    public void divideTroops(State state) {
         ArrayList<Player> p = state.getPlayers();
-        
+
         for (int i = 0; i < p.size(); i++) {
-            int numberOfTroops=state.getTerritories().size();
+            int numberOfTroops = state.getTerritories().size();
             int numberOfTerritories = p.get(i).getTerritories().size();
             for (int num : p.get(i).getTerritories()) {
                 state.getTerritories().get(num - 1).setNumberOfTroops(1);
                 numberOfTroops--;
             }
             ArrayList<Integer> ts = new ArrayList<>(p.get(i).getTerritories());
-            for (int j = 0; j< numberOfTroops; j++) {
+            for (int j = 0; j < numberOfTroops; j++) {
                 int rndm = (int) Math.round(Math.random() * (numberOfTerritories - 1));
                 state.getTerritories().get(ts.get(rndm) - 1).setNumberOfTroops(state.getTerritories().get(ts.get(rndm) - 1).getNumberOfTroops() + 1);
 //            System.out.println("number of troops "+ts.get(rndm));
@@ -117,5 +130,3 @@ public class Utils {
     }
 
 }
-
-

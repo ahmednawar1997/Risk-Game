@@ -3,7 +3,9 @@ package riskgame;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.scene.Scene;
 import riskgame.Agents.Player;
+import riskgamegui.RiskGameGUI;
 
 public class State implements Cloneable, Comparable<State> {
 
@@ -14,13 +16,19 @@ public class State implements Cloneable, Comparable<State> {
     private double cost;
     private State previousState;
     private StateActions actions;
+    private riskgamegui.RiskGameGUI gui;
 
-    public State(ArrayList<Territory> territories, ArrayList<Player> players, int depth) {
+    public State(ArrayList<Territory> territories, ArrayList<Player> players, int depth,RiskGameGUI s) {
         this.territories = territories;
         this.players = players;
         this.playerTurn = 0;
         this.depth = depth;
         this.actions = new StateActions();
+        this.gui=s;
+    }
+
+    public RiskGameGUI getGui() {
+        return gui;
     }
 
     public StateActions getActions() {

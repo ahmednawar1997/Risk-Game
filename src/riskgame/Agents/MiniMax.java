@@ -269,6 +269,7 @@ public class MiniMax extends Player {
         int s[] = CalculateAttack(a);
         if (s[0] == -1) {
             System.out.println("Ending Turn.......");
+             temp.getGui().data.add("Ending turn.......");
             RiskGame.printState(temp);
             return temp;
         } else {
@@ -278,21 +279,32 @@ public class MiniMax extends Player {
             while (true) {                
                 if (f.getTerritories().get(s[0] - 1).getNumberOfTroops() == 1) {
                     System.out.println("Lost war....");
+                     f.getGui().data.add("Lost war.......");
                     return evaluateAttack(f);
                 }
                 System.out.println("Declaring attack from" + s[0] + " on " + s[1] + ".......");
+                 f.getGui().data.add("Declaring attack from" + s[0] + " on " + s[1] + ".......");
+                //   f.getGui().listView.scrollTo(f.getGui().data.size()-1);
                 double dice = Math.random();
                 
                 if (dice < 0.5) {
                     System.out.println("Lost Battle.......");
+                     f.getGui().data.add("Lost Battle.......");
+                  //     f.getGui().listView.scrollTo(f.getGui().data.size()-1);
                     f = simulateLoss(s[0], s[1], f);
                     RiskGame.printState(f);
                 } else {
                     System.out.println("Won Battle.......");
+                      f.getGui().data.add("Won Battle.......");
+                   //      f.getGui().listView.scrollTo(f.getGui().data.size()-1);
+                    
                     f = simulateWin(s[0], s[1], f);
+                    
                     RiskGame.printState(f);
                     if (f.getPlayers().get(f.getPlayerTurn()).getTerritories().contains(s[1])) {
                         System.out.println("Won the war.....");
+                        f.getGui().data.add("Won the war.....");
+                       //    f.getGui().listView.scrollTo(f.getGui().data.size()-1);
                         return evaluateAttack(f);
                     }
                 }
