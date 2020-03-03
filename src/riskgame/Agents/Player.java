@@ -256,7 +256,7 @@ public abstract class Player implements Cloneable {
             }
         }
         State temp = (State) newState.clone();
-        temp.getGui().data.add("Placing " + temp.getPlayers().get(temp.getPlayerTurn()).getBonusTroops() + " troops on " + territory);
+        temp.getGui().updateList("Placing " + temp.getPlayers().get(temp.getPlayerTurn()).getBonusTroops() + " troops on " + territory);
         System.out.println("Placing " + temp.getPlayers().get(temp.getPlayerTurn()).getBonusTroops() + " troops on " + territory);
         return placeTroops(territory, temp);
     }

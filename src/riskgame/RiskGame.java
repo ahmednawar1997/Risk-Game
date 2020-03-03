@@ -27,7 +27,7 @@ public class RiskGame {
         // players.add(player3);
         utils.divideTerritoriesRandom(players, usaTerritories);
 
-        State state = new State(usaTerritories, players, 0,scene);
+        State state = new State(usaTerritories, players, 0,new riskgamegui.RiskGameGUI() );
         utils.divideTroops(state);
 
         Utils.printState(state);

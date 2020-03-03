@@ -21,6 +21,7 @@ public class Passive extends Player {
         State newState = (State) state.clone();
         Territory territory = newState.getPlayers().get(this.getTurn()).getTerritoryWithLowestTroops(newState);
         System.out.println("Passive: Placing "+newState.getPlayers().get(this.getTurn()).getBonusTroops()+" troops on "+territory.getNumber());
+        newState.getGui().updateList("Passive: Placing "+newState.getPlayers().get(this.getTurn()).getBonusTroops()+" troops on "+territory.getNumber());
         territory.setNumberOfTroops(territory.getNumberOfTroops() + newState.getPlayers().get(this.getTurn()).getBonusTroops());
         newState.getPlayers().get(this.getTurn()).setBonusTroops(0);
 //            Utils.printState(newState);

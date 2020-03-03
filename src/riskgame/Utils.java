@@ -93,6 +93,16 @@ public class Utils {
             p.get(k).addTerritory(rndm+1);
             k = (k + 1) % p.size();
         }
+        
+        if(territories.size()-set.size()!=0){
+            for (int i = 0; i < territories.size(); i++) {
+                if(set.contains(i)){
+                    continue;
+                }
+                 int rndm = (int) Math.round(Math.random() * (p.size() - 1));
+                p.get(rndm).addTerritory(i+1);
+            }
+        }
 
     }
 
@@ -117,16 +127,16 @@ public class Utils {
     }
 
     public static void printState(State state) {
-        System.out.println("----------------------------------------------------------------------");
-        for (Player p : state.getPlayers()) {
-            System.out.println("Player: " + p.getTurn() + " *" + p.getClass().getSimpleName() + "*");
-            System.out.println("Territories:" + p.getTerritories());
-        }
-        for (Territory t : state.getTerritories()) {
-            System.out.print(t.getNumber() + " : " + t.getNumberOfTroops() + " troops || ");
-        }
-
-        System.out.println("----------------------------------------------------------------------");
+//        System.out.println("----------------------------------------------------------------------");
+//        for (Player p : state.getPlayers()) {
+//            System.out.println("Player: " + p.getTurn() + " *" + p.getClass().getSimpleName() + "*");
+//            System.out.println("Territories:" + p.getTerritories());
+//        }
+//        for (Territory t : state.getTerritories()) {
+//            System.out.print(t.getNumber() + " : " + t.getNumberOfTroops() + " troops || ");
+//        }
+//
+//        System.out.println("----------------------------------------------------------------------");
     }
 
 }

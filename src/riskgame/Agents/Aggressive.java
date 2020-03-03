@@ -22,7 +22,7 @@ public class Aggressive extends Player {
         Territory territory = newState.getPlayers().get(this.getTurn()).getTerritoryWithHighestTroops(newState);/////////
         territory.setNumberOfTroops(territory.getNumberOfTroops() + newState.getPlayers().get(this.getTurn()).getBonusTroops());
         System.out.println("Aggrassive placing "+newState.getPlayers().get(this.getTurn()).getBonusTroops() +" troops on "+territory.getNumber());
-         newState.getGui().data.add("Aggrassive placing "+newState.getPlayers().get(this.getTurn()).getBonusTroops() +" troops on "+territory.getNumber());
+         newState.getGui().updateList("Aggrassive placing "+newState.getPlayers().get(this.getTurn()).getBonusTroops() +" troops on "+territory.getNumber());
 //         newState.getGui().listView.scrollTo(newState.getGui().data.size()-1);
         newState.getPlayers().get(this.getTurn()).setBonusTroops(0);
 
@@ -36,7 +36,7 @@ public class Aggressive extends Player {
                 break;
             }
 
-             newState.getGui().data.add("Attacking " + enemyTerritory.getNumber() + " with  " + territory.getNumber());
+             newState.getGui().updateList("Attacking " + enemyTerritory.getNumber() + " with  " + territory.getNumber());
             //   newState.getGui().listView.scrollTo(newState.getGui().data.size()-1);
             conquered = attack(territory, enemyTerritory, newState);
 
@@ -115,7 +115,7 @@ public class Aggressive extends Player {
             System.out.println("attacking won");
             if (enemyTerritory.getNumberOfTroops() == 0) {
                 System.out.println("Player " + attackingPlayer.getTurn() + " won " + enemyTerritory.getNumber() + " with Territory " + territory.getNumber());
-
+                newState.getGui().updateList("Won War..");
                 conquer(territory, enemyTerritory, attackingPlayer, defendingPlayer);
                 return true;
             }
